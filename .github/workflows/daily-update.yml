@@ -2,12 +2,14 @@ name: Daily SHPGX Data Update
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Runs at 9am SGT (1am UTC)
-  workflow_dispatch:  # Allows manual trigger
+    - cron: '0 1 * * *'  # 9am SGT
+  workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ✅ Allow push access for GITHUB_TOKEN
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -20,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: pip install pandas requests
 
-      - name: Run script
+      - name: Run update script
         run: python update_shpgx_data.py
 
-      - name: Commit and push if CSV changed
+      - name: Commit & push CSV if changed
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
