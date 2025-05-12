@@ -1,0 +1,32 @@
+name: Daily SHPGX Data Update
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # Runs at 9am SGT (1am UTC)
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pandas requests
+
+      - name: Run script
+        run: python update_shpgx_data.py
+
+      - name: Commit and push if CSV changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add shpgx_price_index.csv
+          git diff --cached --quiet || git commit -m "Daily update"
+          git push
