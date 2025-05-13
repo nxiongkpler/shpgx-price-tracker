@@ -2,7 +2,7 @@ name: Daily SHPGX Data Update
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # 9am SGT
+    - cron: '0 10 * * *'  # 6pm SGT
   workflow_dispatch:
 
 jobs:
